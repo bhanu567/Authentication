@@ -1,17 +1,24 @@
-import { Link } from "react-router-dom";
-
+import { Link, useHistory } from "react-router-dom";
+import AuthContext from "../../store/auth-context";
 import classes from "./MainNavigation.module.css";
-import { useEffect, useState } from "react";
+import { useContext } from "react";
+// import { useEffect, useState } from "react";
 
 const MainNavigation = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const history = useHistory();
+  const authCtx = useContext(AuthContext);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const logOutHandler = () => {
-    localStorage.removeItem("token");
-    setIsLoggedIn(true);
+    // localStorage.removeItem("token");
+    // localStorage["token"] = null;
+    // setIsLoggedIn(true);
+    authCtx.logout();
+    history.replace("/");
   };
-  useEffect(() => {
-    if (localStorage.getItem("token")) setIsLoggedIn(true);
-  }, []);
+  // useEffect(() => {
+  //   if (localStorage.getItem("token")!=="null") setIsLoggedIn(true);
+  // }, []);
+
   return (
     <header className={classes.header}>
       <Link to="/">
@@ -19,17 +26,17 @@ const MainNavigation = () => {
       </Link>
       <nav>
         <ul>
-          {!isLoggedIn && (
+          {!authCtx.isLoggedIn && (
             <li>
               <Link to="/auth">Login</Link>
             </li>
           )}
-          {isLoggedIn && (
+          {authCtx.isLoggedIn && (
             <li>
               <Link to="/profile">Profile</Link>
             </li>
           )}
-          {isLoggedIn && (
+          {authCtx.isLoggedIn && (
             <li>
               <button onClick={logOutHandler}>Logout</button>
             </li>
